@@ -1,0 +1,138 @@
+---- General Explanations ---------------------------------------------------------------------------------
+
+Docker:	- container management software
+		- manages containers, images and volumes
+
+Image:	- blueprint of your container
+		- the instructions for building your container
+		- image can be handed to someone else, who runs build on it -> will have the exact same setup, dependencies and all
+		- snapshot of your container
+		- has layers:
+			- base layer (Debian/Ubuntu/etc.)
+			- software files
+			- dependencies
+			- configuration
+
+Container:	- ready to roll applications from docker images
+			- running instance of a docker image
+			- when a blueprint is run, it's a container
+
+Benefits:	- easy install (handing over image)
+			- easy collaboration (having the same dependencies, binaries etc.)
+			- flexibility (you choose what's in the container)
+			- totality (contains everything you need to run the applications)
+
+
+
+---- VMs vs Containers -------------------------------------------------------------------------------------
+
+VM:	- have their own (guest) operating system
+	- hardware is virtualized
+	- use the underlying hardware of that system or server through a software called hypervisor
+	- takes up more space and resources
+	- takes longer to boot up (because you have to boot an operating system)
+
+Container:	- don't have an operating system
+			- virtualizes the operating system
+			- is just a process running (no hypervisor, no guest operating system)
+			- can boot up instantly
+			- is more portable
+
+
+
+---- Dockerfile Format -------------------------------------------------------------------------------------
+
+---------------------
+# comment				- lines starting with # are treated as comments
+INSTRUCTION arguments	- instructions are not case-sensitive, but for readability recommended to be written in capital letters
+---------------------
+
+---------------------
+RUN echo hello \		- escape character for newline removes newline
+# comment				- comment is skipped
+world					- results in: "RUN echo hello world"
+---------------------
+
+
+
+---- Parser Directives --------------------------------------------------------------------------------------
+
+- parser directives supported:
+	- escape:
+		- sets the escape character to either "\" or "`"
+		- default is "\"
+	- syntax:
+		- only available when using the BuildKit backend
+		- otherwise ignored
+
+---------------------
+# escape=\				- sets escape character to backslash
+---------------------
+
+---------------------
+# escape=`				- sets escape character to backtick
+---------------------
+
+- setting escape character to backitck lets you use backslash as path separator (used in Windows)
+
+---------------------
+# comment
+# directive=value		- directive is treated as a comment is it's not at the top of the file
+---------------------
+
+
+
+---- Environment Replacement --------------------------------------------------------------------------------
+
+- Environment variables can be accessed with:
+	- $variable_name
+	- ${variable_name}
+
+- Braces are typically used for variable names with no whitespace:
+	- ${foo}_bar
+
+- Can also be used for:
+	- ${variable:-word}
+		- indicates that if variable is set then result will be that value
+		- if not set, then word will be the result
+	- ${variable:+word}
+		- indicates that if variable is set then word will be the result
+		- if not set, result is the empty string
+
+---------------------
+FROM busybox
+ENV FOO=/bar
+WORKDIR ${FOO}			# WORKDIR /bar
+ADD . $FOO				# ADD . /bar
+COPY \$FOO /quux		# COPY $FOO /quux
+---------------------
+
+- Environment variables are supported by the following list of instructions in the Dockerfile:
+	- ADD
+	- COPY
+	- ENV
+	- EXPOSE
+	- FROM
+	- LABEL
+	- STOPSIGNAL
+	- USER
+	- VOLUME
+	- WORKDIR
+	- ONBUILD (when combined with one of the supported instructions above)
+
+- Environment variable substitution will use the same value for each variable throughout the entire instruction:
+
+---------------------
+ENV abc=hello			- abc is set to "hello"
+ENV abc=bye def=$abc	- abc is set to "bye", def is set to "hello" (because changes happen after instruction line)
+ENV ghi=$abc			- ghi is set to "bye"
+---------------------
+
+
+
+---- Dockerignore File --------------------------------------------------------------------------------
+
+- You can use .dockerignore file to exclude files and directories from the build context
+
+
+https://docs.docker.com/engine/reference/builder/
