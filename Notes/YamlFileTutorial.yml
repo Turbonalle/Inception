@@ -1,0 +1,79 @@
+--- # this starts a new YAML document
+# different ways to write strings
+  string1: "This is a string"
+  string2: This is another string
+  string3: "This is a string with a # character"
+  string4: 'Strings can also be in single quotes'
+  string5: "This string will have a newline\n"
+  string6: This newline will be ignored\n
+  string7: >
+    This string will be on multiple lines
+    and will be folded into a single line
+  string8: |
+    This string will be on multiple lines
+    and will be preserved as is (with newlines)
+  string9: >+
+    This string will be on multiple lines
+    and will be folded into a single line
+    with a newline at the end
+  string10: >-
+    This string will be on multiple lines
+    and will be folded into a single line
+    but without a newline at the end
+  string11: |+
+    This string will be on multiple lines
+    and will be preserved as is (with newlines)
+    with a newline at the end
+  string12: |-
+    This string will be on multiple lines
+    and will be preserved as is (with newlines)
+    but without a newline at the end
+# different ways to write numbers
+  number1: 1
+  number2: 1.2345
+  number3: 1.2345e+03
+# different ways to write booleans
+  boolean1: true
+  boolean2: false
+  boolean3: on
+  boolean4: off
+  boolean5: yes
+  boolean6: no
+# different ways to write null
+  null1: null
+  null2: ~
+# different ways to write arrays/lists
+  array1: [ 1, 2, 3, 4, 5 ]
+  array2: [ "one", "two", "three", "four", "five" ]
+  array3:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+  array4:
+    - "one"
+    - "two"
+    - "three"
+    - "four"
+    - "five"
+# different ways to write nested arrays/lists
+  object1:
+    key1: value1
+    key2: value2
+    key3: value3
+  object2:
+    - things:
+      thing1: thing1
+      thing2: thing2
+      thing3: thing3
+    - other things:
+      thing4: thing4
+      thing5: thing5
+      thing6: thing6
+      random number: 12345 # values don't have to be of the same type
+  object3: { key1: value1, key2: value2, key3: value3 }
+  object4: { things: { thing1: thing1, thing2: thing2, thing3: thing3 }, other things: { thing4: thing4, thing5: thing5, thing6: thing6, random number: 12345 } }
+... # this ends the YAML document
+--- # next document
+  # every document in a YAML file must start with --- and end with ...
