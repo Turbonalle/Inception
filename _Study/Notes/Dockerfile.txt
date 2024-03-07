@@ -30,3 +30,14 @@
 	RUN chmod +x launch.sh
 
 	CMD ["./launch.sh"]
+
+
+INSTRUCTIONS:
+
+- FROM		specifies the base image
+- RUN		runs a command in the container (adds a new layer to the image)
+- COPY		copies files from the host to the container
+			COPY /path/to/host/file /path/to/container/file
+- WORKDIR	specifies the working directory for the container (creates it if it doesnt exist)
+- EXPOSE	specifies the port the container listens on
+- CMD		specifies the command to run when the container starts

@@ -1,14 +1,9 @@
 FROM debian:buster
 
-RUN apt update
-
-# -y flag is used to skip the confirmation prompt (telling it yes to everything)
-RUN apt install nginx -y
+RUN apt update && apt install -y nginx openssl
 
 # create a directory to store the SSL certificate and key
 RUN mkdir -p /etc/nginx/ssl
-
-RUN apt install OpenSSL -y
 
 RUN openssl req -x509 -nodes \
 	-out /etc/nginx/ssl/inception.crt \

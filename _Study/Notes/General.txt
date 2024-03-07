@@ -1,3 +1,11 @@
+---- Steps ---------------------------------------------------------------------------------
+
+1. Install VM
+2. In VM, install Docker:
+	- sudo apt update
+	- sudo apt install docker.io docker-compose -y
+
+
 ---- General Explanations ---------------------------------------------------------------------------------
 
 Docker:	- container management software

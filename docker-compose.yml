@@ -1,0 +1,63 @@
+version: '3'
+
+volumes:
+  wordpress:
+    name: wordpress
+    driver-opts:
+      type: none
+      o: bind
+      device: /home/jbagger/data/html
+  mariadb:
+    name: mariadb
+    driver-opts:
+      type: none
+      o: bind
+      device: /home/jbagger/data/mysql
+
+networks:
+  inception-network:
+
+services:
+  nginx:
+    container-name: nginx
+    build: ./requirements/nginx/.
+    image: nginx:jbagger
+    restart: always
+    depends_on:
+      - wordpress
+    ports:
+      - "443:443"
+    env_file:
+      - .env
+    networks:
+      - inception-network
+    volumes:
+      - wordpress:/var/www/html
+  wordpress:
+    container-name: wordpress
+    image: wordpress:jbagger
+    depends_on:
+      - mariadb
+    build: ./requirements/wordpress/.
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - inception-network
+    volumes:
+      - wordpress:/var/www/html
+  mariadb:
+    container-name: mariadb
+    image: mariadb:jbagger
+    build: ./requirements/mariadb/.
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - inception-network
+    volumes:
+      - mariadb:/var/lib/mysql
+
+
+# docker-compose build  - builds the image
+# docker-compose up     - starts the container
