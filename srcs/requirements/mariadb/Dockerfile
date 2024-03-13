@@ -1,10 +1,14 @@
 FROM debian:buster
 
-RUN apt update -y
-RUN apt upgrade -y
-RUN apt-get install mariadb-server -y
+RUN apt update -y && apt upgrade -y && apt-get install mariadb-server -y
 
-# copy the configuration file
-COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+RUN chmod 644 /etc/mysql/mariadb.conf.d/50-server.cnf
 
-CMD
+COPY ./tools/createDatabase.sh /
+WORKDIR /
+RUN chmod +x ./createDatabase.sh
+
+RUN echo "Testing!"
+
+CMD ["/createDatabase.sh"]

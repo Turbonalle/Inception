@@ -1,13 +1,15 @@
-# here we indicate which category the following configuration will follow
 [mysqld]
 
-# here we spcify our folder where the data will be stored
+# folder to store our database
 datadir = /var/lib/mysql
-# here we specify the socket file
+
+# socket to communicate with
 socket = /var/lib/mysqld/mysqld.sock
-# here we specify that all the IPs in the network can connect
-# is the same as: bind_address=XXX.XXX.XX.XX
+
+# allow network to connect to any IP address
 bind_address=*
-# here we specify the port where the server will be listening
+
+# port that MySQL will communicate on
 port = 3306
+
 user = mysql

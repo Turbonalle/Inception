@@ -2,10 +2,11 @@ version: '3.5'
 
 volumes:
   wordpress:
-  mariadb:
+  # mariadb:
 
 networks:
-  inception-network:
+  inception:
+    driver: bridge
 
 services:
 
@@ -18,7 +19,7 @@ services:
     build:
       context: requirements/nginx
       dockerfile: Dockerfile
-      env_file: .env
+      # env_file: .env
     ports:
       - "443:443"
     restart: on-failure
@@ -27,7 +28,7 @@ services:
 
   wordpress:
     container_name: wordpress
-    env_file: .env
+    # env_file: .env
     volumes:
       - wordpress:/var/www/html
     networks:

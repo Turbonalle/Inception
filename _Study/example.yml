@@ -21,7 +21,7 @@ services:
   nginx:
     container-name: nginx
     build: ./requirements/nginx/.
-    image: nginx:jbagger
+    # image: nginx:jbagger
     restart: always
     depends_on:
       - wordpress
@@ -35,7 +35,7 @@ services:
       - wordpress:/var/www/html
   wordpress:
     container-name: wordpress
-    image: wordpress:jbagger
+    # image: wordpress:jbagger
     depends_on:
       - mariadb
     build: ./requirements/wordpress/.
@@ -48,7 +48,7 @@ services:
       - wordpress:/var/www/html
   mariadb:
     container-name: mariadb
-    image: mariadb:jbagger
+    # image: mariadb:jbagger
     build: ./requirements/mariadb/.
     restart: always
     env_file:
