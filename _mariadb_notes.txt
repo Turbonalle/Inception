@@ -1,9 +1,0 @@
-mariadb -ppassword
-
-SHOW DATABASES;
-
-USE database;
-
-SHOW TABLES;
-
-SELECT * FROM table;
