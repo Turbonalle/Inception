@@ -2,46 +2,66 @@ RED = \033[0;31m
 GREEN = \033[0;32m
 CYAN = \033[0;36m
 RESET = \033[0m
+VOL_WP = data/wordpress
+VOL_DB = data/mariadb
 
-compose:
-	@echo "$(CYAN)Running Nginx with Docker Compose$(RESET)"
-	@docker-compose -f ./srcs/docker-compose.yml up --build
+vol:
+	@mkdir -p $(VOL_WP) $(VOL_DB)
+	[ -e $(VOL_WP)/index.php ] || echo '<!DOCTYPE html><html><head><title>PHP Test</title></head><body><?php echo "<p>Hello World</p>"; ?></body></html>' > $(VOL_WP)/index.php
 
-build:
-	@echo "$(CYAN)Building Nginx$(RESET)"
-	@docker build -t nginx ./srcs/requirements/nginx
+up: vol
+	@echo "$(CYAN)Composing$(RESET)"
+	@docker compose -f ./srcs/compose.yaml up -d
 
-run:
-	@echo "$(CYAN)Running Nginx$(RESET)"
-	@docker run -it -p 443:443 nginx
+down:
+	@echo "$(CYAN)Decomposing$(RESET)"
+	@docker compose -f ./srcs/compose.yaml down
+
+build: vol
+	@echo "$(CYAN)Building$(RESET)"
+	@docker compose -f ./srcs/compose.yaml up -d --build
 
 list:
 	@echo "$(CYAN)List of docker images:$(RESET)"
 	@docker images
 	@echo "$(CYAN)List of docker containers:$(RESET)"
 	@docker ps -a
-	@echo "$(CYAN)List of docker volumes:$(RESET)"
-	@docker volume ls
-	@echo "$(CYAN)List of docker networks:$(RESET)"
-	@docker network ls
 
-stop:
-	@echo "$(CYAN)Stopping Nginx$(RESET)"
-	@docker stop $(docker ps -a -q)
+godb:
+	@echo "$(CYAN)Entering mariadb$(RESET)"
+	docker exec -it mariadb sh
 
-clean:
+gowp:
+	@echo "$(CYAN)Entering wordpress$(RESET)"
+	docker exec -it wordpress sh
+
+gong:
+	@echo "$(CYAN)Entering nginx$(RESET)"
+	docker exec -it nginx sh
+
+clean: down
 	@echo "$(CYAN)Removing containers:$(RESET)"
-	@./_Study/Test/remove_containers.sh
+	@./tools/remove_containers.sh
 
 fclean: clean
 	@echo "$(CYAN)Removing images:$(RESET)"
-	@./_Study/Test/remove_images.sh
+	@./tools/remove_images.sh
+
+vclean: fclean
 	@echo "$(CYAN)Removing volumes:$(RESET)"
-	@./_Study/Test/remove_volumes.sh
-	@echo "$(CYAN)Removing networks:$(RESET)"
-	@./_Study/Test/remove_networks.sh
+	@if [ -d $(VOL_WP) ]; then \
+		echo "$(VOL_WP)"; \
+		sudo rm -rf $(VOL_WP); \
+	fi
+	@if [ -d $(VOL_DB) ]; then \
+		echo "$(VOL_DB)"; \
+		sudo rm -rf $(VOL_DB); \
+	fi
 
-re: fclean build run
+prune: vclean
+	@echo "$(CYAN)Pruning docker system$(RESET)"
+	@docker system prune -fa --volumes
 
-# docker stop $(docker ps -a -q)   # Stops all containers
-# docker rm $(docker ps -a -q)     # Removes all stopped containers
+re: fclean build
+
+vre: vclean build

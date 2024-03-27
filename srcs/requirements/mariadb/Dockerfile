@@ -1,14 +1,23 @@
-FROM debian:buster
+FROM debian:bullseye
 
-RUN apt update -y && apt upgrade -y && apt-get install mariadb-server -y
+# Install MariaDB
+RUN apt-get update && \
+	apt-get install -y \
+	sudo \
+	mariadb-server \
+	mariadb-client && \
+	rm -rf /var/lib/apt/lists/*
 
-COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+# Copy configuration file
+COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/
+
+# Change permissions of configuration file
 RUN chmod 644 /etc/mysql/mariadb.conf.d/50-server.cnf
 
-COPY ./tools/createDatabase.sh /
-WORKDIR /
-RUN chmod +x ./createDatabase.sh
+# Copy database initialization script
+COPY ./tools/initdb.sh bin/docker-entrypoint-initdb.sh
 
-RUN echo "Testing!"
+RUN chmod +x bin/docker-entrypoint-initdb.sh
 
-CMD ["/createDatabase.sh"]
+ENTRYPOINT ["bin/docker-entrypoint-initdb.sh"]
+# ENTRYPOINT ["sleep", "10000"]
