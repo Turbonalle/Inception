@@ -7,7 +7,7 @@ VOL_DB = data/mariadb
 
 vol:
 	@mkdir -p $(VOL_WP) $(VOL_DB)
-	[ -e $(VOL_WP)/index.php ] || echo '<!DOCTYPE html><html><head><title>PHP Test</title></head><body><?php echo "<p>Hello World</p>"; ?></body></html>' > $(VOL_WP)/index.php
+	@[ -e $(VOL_WP)/index.php ] || echo '<!DOCTYPE html><html><head><title>PHP Test</title></head><body><?php echo "<p>Hello World</p>"; ?></body></html>' > $(VOL_WP)/index.php
 
 up: vol
 	@echo "$(CYAN)Composing$(RESET)"
@@ -50,12 +50,16 @@ fclean: clean
 vclean: fclean
 	@echo "$(CYAN)Removing volumes:$(RESET)"
 	@if [ -d $(VOL_WP) ]; then \
-		echo "$(VOL_WP)"; \
 		sudo rm -rf $(VOL_WP); \
+		echo "$(VOL_WP)"; \
 	fi
 	@if [ -d $(VOL_DB) ]; then \
-		echo "$(VOL_DB)"; \
 		sudo rm -rf $(VOL_DB); \
+		echo "$(VOL_DB)"; \
+	fi
+	@if [ -d data ]; then \
+		sudo rm -rf data; \
+		echo "data"; \
 	fi
 
 prune: vclean
